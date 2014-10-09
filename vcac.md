@@ -41,13 +41,17 @@ The Chef-based Services are bound to operating system Templates within Applicati
 
 ## Chef Data in/from vCAC
 
+vCAC and Chef both have multi-tenant support, with groups and organizations that will need to be mapped between systems. Users will need to be able interact with vCAC and Chef without interfering with other users outside their organization.
+
+The vCAC guest agent contains the custom blueprint properties and additional vCAC deployment metadata that may be pulled into Chef. This will either need to populate a JSON file or have ohai directly interact with the guest agent. This should probably populate the node['vcac'] namespace.
+
 There may be places in the WebUI that we could add additional data from the Chef server. APIs exist to push or pull additional data from the Chef Server, the use cases have yet to be identified. Similarly for purposes of reporting, we may wish to add an Event Handler to our Chef client runs that pushes additional data into vCAC or vCAC data into the Chef Analytics platform.
 
 # External Application Service Automation with Chef
 
 vCloud Automation Center 6.0 added a [REST API](http://pubs.vmware.com/vCAC-61/index.jsp#com.vmware.vcac.appservices.all.doc/GUID-FBE98671-7140-4FA6-B9C7-57FF748842C9.html) that we should be able to use to build automated workflows outside of the WebUI. These workflows will still take advantage of vCAC's governance and management capabilities, but make it easier to build CI pipelines and give developers faster access to virtualized resources.
 
-Chef users expect to automate platforms with knife, Test Kitchen and Chef Metal. Since there does not appear to be a Ruby SDK available for the API, we will need to write a new Ruby library that wraps the API calls used by Chef, published to Rubygems with an Apache 2 license. This library will not cover the entire API, only the Resources managed by Chef.
+Chef users expect to automate platforms with knife, Test Kitchen and Chef Metal. Since there does not appear to be a Ruby SDK available for the API, we will need to write a new Ruby library that wraps the API calls used by Chef, published to Rubygems with an Apache 2 license. This library will not cover the entire API, only the Resources managed by Chef. We will need to investigate the "vCAC-CLI" tool referenced here: http://elasticskies.com/vcloud-automation-center-61-ga/
 
 ## knife-vcac
 
@@ -135,7 +139,7 @@ http://pubs.vmware.com/vCAC-61/index.jsp#com.vmware.vcac.appservices.all.doc/GUI
 
 ## test-kitchen-vcac
 
-Test Kitchen support will be added after knife-vcac development is providing useful functionality. Test Kitchen is currently single-instance only, so deployments of single nodes bound to operating system templates should prove analogous to how it currently behaves.
+Test Kitchen support will be added after knife-vcac development is providing useful functionality. Test Kitchen supports single and multi-node deployments, so this should map to Applications and to operating system templates.
 
 ## chef-metal-vcac
 
